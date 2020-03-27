@@ -7,7 +7,7 @@ request.onupgradeneeded = function(event) {
   // create object store called "pending" and set autoIncrement to true
   const db = event.target.result;
   const pendingObjStore = db.createObjectStore("Pending", { autoIncrement:true });
-  pendingObjStore.createIndex("transactionIndex", "transaction")
+  pendingObjStore.createIndex("purchasingIndex", "purchasing")
 };
 
 request.onsuccess = function(event) {
@@ -24,26 +24,26 @@ request.onerror = function(event) {
 };
 
 function saveRecord(record) {
-  // create a transaction on the pending db with readwrite access
-  const transaction = db.transaction(["Pending"], "readwrite");
+  // create a purchasing on the pending db with readwrite access
+  const purchasing = db.transaction(["Pending"], "readwrite");
   // access your pending object store
-  const pendingObjStore = transaction.objectStore("Pending");
+  const pendingObjStore = purchasing.objectStore("Pending");
   // add record to your store with add method.
   pendingObjStore.add(record);
 }
 
 function checkDatabase() {
-  // open a transaction on your pending db
+  // open a purchasing on your pending db
   const db = request.result;
-  const transaction = db.transaction(["Pending"], "readonly");
+  const purchasing = db.transaction(["Pending"], "readonly");
   // access your pending object store
-  const pendingObjStore = transaction.objectStore("Pending");
+  const pendingObjStore = purchasing.objectStore("Pending");
   // get all records from store and set to a variable
   const getAll = pendingObjStore.getAll();
 
   getAll.onsuccess = function() {
     if (getAll.result.length > 0) {
-      fetch("/api/transaction/bulk", {
+      fetch("/api/purchasing/bulk", {
         method: "POST",
         body: JSON.stringify(getAll.result),
         headers: {
@@ -53,10 +53,10 @@ function checkDatabase() {
       })
       .then(response => response.json())
       .then(() => {
-          // if successful, open a transaction on your pending db
-          const transaction = db.transaction(["Pending"], "readonly")
+          // if successful, open a purchasing on your pending db
+          const purchasing = db.transaction(["Pending"], "readonly")
           // access your pending object store
-          const pendingObjStore = transaction.objectStore("Pending");
+          const pendingObjStore = purchasing.objectStore("Pending");
           // clear all items in your store
           pendingObjStore.clear();
       });

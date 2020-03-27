@@ -1,21 +1,21 @@
-let transactions = [];
+let purchases = [];
 let myChart;
 
-fetch("/api/transaction")
+fetch("/api/purchasing")
   .then(response => {
     return response.json();
   })
   .then(data => {
     // save db data on global variable
-    transactions = data;
+    purchases = data;
     populateTotal();
     populateTable();
     populateChart();
   });
 
 function populateTotal() {
-  // reduce transaction amounts to a single total value
-  const total = transactions.reduce((total, t) => {
+  // reduce purchasing amounts to a single total value
+  const total = purchases.reduce((total, t) => {
     return total + parseInt(t.value);
   }, 0);
 
@@ -27,12 +27,12 @@ function populateTable() {
   const tbody = document.querySelector("#tbody");
   tbody.innerHTML = "";
 
-  transactions.forEach(transaction => {
+  purchases.forEach(purchasing => {
     // create and populate a table row
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${transaction.name}</td>
-      <td>${transaction.value}</td>
+      <td>${purchasing.name}</td>
+      <td>${purchasing.value}</td>
     `;
 
     tbody.appendChild(tr);
@@ -41,7 +41,7 @@ function populateTable() {
 
 function populateChart() {
   // copy array and reverse it
-  const reversed = transactions.slice().reverse();
+  const reversed = purchases.slice().reverse();
   let sum = 0;
 
   // create date labels for chart
@@ -93,7 +93,7 @@ function sendTransaction(isAdding) {
   }
 
   // create record
-  const transaction = {
+  const purchasing = {
     name: nameEl.value,
     value: amountEl.value,
     date: new Date().toISOString()
@@ -101,19 +101,19 @@ function sendTransaction(isAdding) {
 
   // if subtracting funds, convert amount to negative number
   if (!isAdding) {
-    transaction.value *= -1;
+    purchasing.value *= -1;
   }
 
   // add to beginning of current array of data
-  transactions.unshift(transaction);
+  purchases.unshift(purchasing);
 
   // re-run logic to populate ui with new record
   populateChart();
   populateTable();
   populateTotal();
   function populateTotal() {
-    // reduce transaction amounts to a single total value
-    const total = transactions.reduce((total, t) => {
+    // reduce purchasing amounts to a single total value
+    const total = purchases.reduce((total, t) => {
       return total + parseInt(t.value);
     }, 0);
   
@@ -122,9 +122,9 @@ function sendTransaction(isAdding) {
   }
 
   // also send to server
-  fetch("/api/transaction", {
+  fetch("/api/purchasing", {
     method: "POST",
-    body: JSON.stringify(transaction),
+    body: JSON.stringify(purchasing),
     headers: {
       Accept: "application/json, text/plain, */*",
       "Content-Type": "application/json"

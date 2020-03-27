@@ -1,31 +1,31 @@
 const router = require("express").Router();
-const Transaction = require("../models/transaction.js");
+const Purchasing = require("../models/purchasing.js");
 
-router.post("/api/transaction", ({ body }, res) => {
-  Transaction.create(body)
-    .then(dbTransaction => {
-      res.json(dbTransaction);
+router.post("/api/purchasing", ({ body }, res) => {
+  Purchasing.create(body)
+    .then(Purchasing => {
+      res.json(Purchasing);
     })
     .catch(err => {
       res.status(400).json(err);
     });
 });
 
-router.post("/api/transaction/bulk", ({ body }, res) => {
-  Transaction.insertMany(body)
-    .then(dbTransaction => {
-      res.json(dbTransaction);
+router.post("/api/purchasing/bulk", ({ body }, res) => {
+  Purchasing.insertMany(body)
+    .then(Purchasing => {
+      res.json(Purchasing);
     })
     .catch(err => {
       res.status(400).json(err);
     });
 });
 
-router.get("/api/transaction", (req, res) => {
-  Transaction.find({})
+router.get("/api/purchasing", (req, res) => {
+  Purchasing.find({})
     .sort({ date: -1 })
-    .then(dbTransaction => {
-      res.json(dbTransaction);
+    .then(Purchasing => {
+      res.json(Purchasing);
     })
     .catch(err => {
       res.status(400).json(err);
