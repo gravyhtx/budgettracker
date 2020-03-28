@@ -1,34 +1,34 @@
 const router = require("express").Router();
-const Purchasing = require("../models/purchasing.js");
+const Transaction = require("../models/transaction.js");
 
-router.post("/api/purchasing", ({ body }, res) => {
-  Purchasing.create(body)
-    .then(Purchasing => {
-      res.json(Purchasing);
+router.post("/api/transaction", ({body}, res) => {
+  Transaction.create(body)
+    .then(dbTransaction => {
+      res.json(dbTransaction);
     })
     .catch(err => {
-      res.status(400).json(err);
+      res.status(404).json(err);
     });
 });
 
-router.post("/api/purchasing/bulk", ({ body }, res) => {
-  Purchasing.insertMany(body)
-    .then(Purchasing => {
-      res.json(Purchasing);
+router.post("/api/transaction/bulk", ({body}, res) => {
+  Transaction.insertMany(body)
+    .then(dbTransaction => {
+      res.json(dbTransaction);
     })
     .catch(err => {
-      res.status(400).json(err);
+      res.status(404).json(err);
     });
 });
 
-router.get("/api/purchasing", (req, res) => {
-  Purchasing.find({})
-    .sort({ date: -1 })
-    .then(Purchasing => {
-      res.json(Purchasing);
+router.get("/api/transaction", (req, res) => {
+  Transaction.find({})
+    .sort({date: -1})
+    .then(dbTransaction => {
+      res.json(dbTransaction);
     })
     .catch(err => {
-      res.status(400).json(err);
+      res.status(404).json(err);
     });
 });
 
